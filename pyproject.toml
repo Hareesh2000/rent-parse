@@ -7,7 +7,12 @@ authors = [
     { name = "Hareesh", email = "hareesh@swivl.tech" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "openai>=3.41.0",
+    "pydantic>=2.14.2",
+    "pytest-asyncio>=1.4.1",
+    "python-dotenv>=1.2.4",
+]
 
 [project.scripts]
 rent-parse = "rent_parse:main"
@@ -33,3 +38,7 @@ strict = true
 # UP: pyupgrade (modern Python syntax)
 # B: flake8-bugbear (common bugs/design issues)
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

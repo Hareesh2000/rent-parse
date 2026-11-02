@@ -1,5 +1,8 @@
+import logging
 from dataclasses import dataclass
 from typing import NotRequired, TypedDict
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -22,6 +25,9 @@ KNOWN_ENTITY_TYPES: frozenset[str] = frozenset(
 def parse_text_entities(entities: list[TextEntity]) -> ParsedData:
     """Flattens a list of Telegram text entities into a plain string
     and extracts data with known types."""
+
+    logger.debug("Starting parse of %s text entities.", len(entities))
+
     flattened_text = []
     entity_type_counts: dict[str, int] = {}
     extracted_entities_data: dict[str, str] = {}
@@ -35,6 +41,9 @@ def parse_text_entities(entities: list[TextEntity]) -> ParsedData:
                 entity.get("href") is None or entity.get("href") == ""
             ):
                 # If a text_link entity does not have an href, treat it as plain text
+                logger.warning(
+                    "text_link entity missing href; falling back to plain text."
+                )
                 flattened_text.append(entity_text)
                 continue
 
@@ -54,6 +63,12 @@ def parse_text_entities(entities: list[TextEntity]) -> ParsedData:
             flattened_text.append(entity_text)
 
     flattened_text_string = "".join(flattened_text)
+
+    logger.debug(
+        "Successfully parsed entities. Generated %s placeholders.",
+        len(extracted_entities_data),
+    )
+
     parsed_entity = ParsedData(
         text=flattened_text_string, extracted_data=extracted_entities_data
     )
