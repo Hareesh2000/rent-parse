@@ -37,6 +37,7 @@ async def test_returns_listing_when_parsed() -> None:
         listing_type=ListingType.FLATMATE,
         rent=17000,
         locality="Seegehalli",
+        building=None,
         furnishing=None,
         bedrooms=3,
         preferred_tenants="male",

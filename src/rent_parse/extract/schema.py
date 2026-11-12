@@ -28,7 +28,19 @@ class Listing(BaseModel):
         description="The specific neighborhood or sub-locality "
         "in Bangalore (e.g., 'HSR Layout', 'Koramangala'). Extract only the area name, "
         "ignoring the city name, exact street address, or building name. "
-        "Return null if the locality is not mentioned."
+        "Put any building or house details in `building` instead. "
+        "Only extract a locality that is written in the text. Do not infer it "
+        "from a building name, a landmark (e.g., 'near Manyata Tech Park'), "
+        "a PIN code, or your own knowledge of Bangalore. "
+        "Return null if the locality is not explicitly mentioned."
+    )
+    building: str | None = Field(
+        description="The specific building the listing is in: an apartment, "
+        "society or complex name (e.g., 'Prestige Lakeside Habitat'), or an "
+        "individual house or plot number with its street (e.g., '#42, 3rd Cross'). "
+        "Do not include the locality, the city, or nearby landmarks "
+        "(e.g., 'near Manyata Tech Park', 'behind Sparsh Hospital'). "
+        "Return null if no building or house is mentioned."
     )
     furnishing: Literal["furnished", "semi-furnished", "unfurnished"] | None = Field(
         description="The furnishing status of the property. "
@@ -50,6 +62,10 @@ class Listing(BaseModel):
             "If they specify a gender (e.g., 'girls only'), "
             "choose 'female' or 'male'. "
             "If they explicitly state any tenant is allowed, use 'any'. "
+            "Only explicit tenant requirements count (e.g., 'family only', "
+            "'preferred: family'). Descriptions of the building or area "
+            "(e.g., 'family-friendly building', 'good for families') are not "
+            "tenant restrictions. "
             "If no restriction is mentioned, return null."
         )
     )
